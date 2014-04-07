@@ -117,7 +117,7 @@
     <div id="flight_display_detail"
         data-role="view"
         data-layout="header-footer-layout2"
-        data-title="Shedule Detail">
+        data-title="Schedule Detail">
         
         <div class="view-content">
             <ul id="flightDisplayDetailList"
@@ -165,6 +165,7 @@
         data-role="view"
         data-layout="header-footer-layout2"
         data-init="listViewHistoryInit"
+        data-show="listViewHistoryShow"
         data-title="History">
         
         <div class="view-content" id="forms" data-title="Query Forms" >
@@ -341,7 +342,7 @@
         <div data-role="header">
             <div data-role="navbar">
                 <span data-role="view-title"></span>
-                <a href="#query" data-role="button" data-align="left">Home</a>
+                <a href="#query" data-role="button" data-align="left">Query</a>
                 <a href="#settings" data-role="button" data-align="right">Settings</a>
             </div>
         </div>
@@ -357,31 +358,6 @@
         
     </div>
     <!--Layout2: header (home & settings) & footer(advertising)-->
-    
-    
-    <!--Layout3: header (home & settings) & footer(advertising)-->
-    <div data-role="layout" data-id="header-footer-layout2">
-
-        <!--Header-->
-        <div data-role="header">
-            <div data-role="navbar">
-                <span data-role="view-title"></span>
-                <a href="#query" data-role="button" data-align="left">Home</a>
-                <a href="#settings" data-role="button" data-align="right">Settings</a>
-            </div>
-        </div>
-
-        <!--Footer-->
-        <div data-role="footer">
-            <div data-role="tabstrip">  
-              	<a href="http://www.abccargo.com">
-				  	<img src="styles/images/ccn.jpg" />
-                  </a>
-            </div>
-        </div>
-        
-    </div>
-    <!--Layout3: header (home & settings) & footer(advertising)-->
     
     <script>
         //Init the kendo ui mobile
@@ -438,7 +414,7 @@
         }
 
         
-        /* Action for query view */
+        /* BEGIN: Query View action */
         function initQueryView(e){
         	//alert("initQueryView");
         	//Init components
@@ -495,7 +471,7 @@
             });
         	
         }
-        /* End: Action for query view */
+        /* END: Query View action */
         
         
         function showMap(e) {
@@ -560,7 +536,6 @@
                     });
                 }
             }
-        
         	/*
         	//Use json ws
             $('#map_canvas').gmap().bind('init', function() { 
@@ -596,9 +571,11 @@
         function onHistoryItemSwipe(e){
         	//var confirmModalView = $("#deleteDialog").data("kendoMobileModalView");
         	//confirmModalView.open();
-        	alert("onHistoryItemSwipe() action");
+        	//alert("onHistoryItemSwipe() action");
         }
         
+        
+        /* BEGIN: Flight Display View action */
         //Action of click item of FlightDisplay listview
         function onFlightDisplayItemSwipe(e){
         	//var confirmModalView = $("#deleteDialog").data("kendoMobileModalView");
@@ -611,25 +588,19 @@
         	//var confirmModalView = $("#deleteDialog").data("kendoMobileModalView");
         	//confirmModalView.open();
         	//alert("onFlightDisplayItemClick() action");
-        
                 
         	//Move to the Flight Display page
             app.navigate('#flight_display_detail','slide:right');
         }
+                        
+        function flightDisplayInit(e){
         
-        //flightDisplayDetailDS: show the list of Flight Display Detail view 
-        	var flightDisplayDetailDS = new kendo.data.DataSource({
-                transport: {
-                // make JSONP request to http://demos.telerik.com/kendo-ui/service/products
-                read: {
-                  url: "data/getScheduleDetail.json",
-                  dataType: "json" // "jsonp" is required for cross-domain requests; use "json" for same-domain requests
-                },
-            	scrollable: {
-                	virtual: true
-            	}
-              }
-            });
+        }
+        
+        
+        function flightDisplayShow(e){
+        	alreadyClickItemInFlightDisplayList = false;        	
+        }
         
         //flightDisplayDS: show the list of Flight Display view 
         var flightDisplayDS = new kendo.data.DataSource({
@@ -647,17 +618,41 @@
         
         //onFlightDisplay_showMap() action
         function onFlightDisplay_showMap(e){
+        	//alert("onFlightDisplay_showMap()");
+        
         	//Calculate the location of flight display
         	
         	//Move to the Flight Display page
             app.navigate('#flight_map','slide:right');
+        
+        	e.preventDefault();
         }
         
         //onFlightDisplay_save() action
         function onFlightDisplay_save(e){    
         	//Move to the Flight Display page
-        	alert("onFlightDisplay_save() action");
+        	//alert("onFlightDisplay_save() action");
         }
+        
+        /* END: Flight Display View action */
+        
+        
+        
+        /* BEGIN: Flight Display Detail View action */
+        
+        //flightDisplayDetailDS: show the list of Flight Display Detail view 
+    	var flightDisplayDetailDS = new kendo.data.DataSource({
+            transport: {
+            // make JSONP request to http://demos.telerik.com/kendo-ui/service/products
+            read: {
+              url: "data/getScheduleDetail.json",
+              dataType: "json" // "jsonp" is required for cross-domain requests; use "json" for same-domain requests
+            },
+        	scrollable: {
+            	virtual: true
+        	}
+          }
+        });
         
         //onFlightDisplayDetail_showMap() action
         function onFlightDisplayDetail_showMap(e){
@@ -684,20 +679,9 @@
         	
         	//Move to the Flight Display page
             app.navigate('#flight_display','slide:right');	
-        }
+        }     
         
-        
-        function flightDisplayInit(e){
-        
-        }
-        
-        
-        function flightDisplayShow(e){
-        	
-        }
-        
-        
-        
+        /* END: Flight Display Detail View action */
         
         /*
         function onClick(e){
@@ -735,6 +719,7 @@
               }
         */
         
+        /* BEGIN: History View action */
         
         //historyDS: show the list of History view 
         var historyDS = new kendo.data.DataSource({
@@ -760,6 +745,11 @@
             });      
         
         	//$("deleteAllBtn").hide();
+        }
+        
+        function listViewHistoryShow(e){
+        	//Hide the delete btn
+        	$('#deleteAllDiv').hide();               	
         }
         
         function onHistorySwipe(e){
@@ -904,6 +894,8 @@
         	//Move to the Flight Display page
         	alert("onHistory_save() action");
         }
+        
+        /* END: History View action */
         
         /*
         $("#endless-scrolling").kendoMobileListView({
