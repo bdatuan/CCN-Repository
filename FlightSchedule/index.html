@@ -3,18 +3,21 @@
 <head>
     <title></title>
     <meta charset="utf-8" />
+    
     <link href="kendo/styles/kendo.mobile.all.min.css" rel="stylesheet" />
+    <link href="http://cdn.kendostatic.com/2013.1.514/styles/kendo.default.min.css" rel="stylesheet" />
+    <link href="kendo/styles/kendo.common.min.css" rel="stylesheet" />
+    <link href="kendo/styles/kendo.dataviz.min.css" rel="stylesheet" />
+    
     <link href="styles/main.css" rel="stylesheet" />
-
+    
     <script src="cordova.js"></script>
     <script src="kendo/js/jquery.min.js"></script>
-    <script src="kendo/js/kendo.mobile.min.js"></script>
+    <!-- <script src="kendo/js/kendo.mobile.min.js"></script> -->
+    <script src="kendo/js/kendo.all.min.js"></script>
+    <script src="kendo/js/jquery.ui.map.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=true"></script>
-
-    <script src="scripts/login.js"></script>
-    <script src="scripts/location.js"></script>
-    <script src="scripts/weather.js"></script>
-    <script src="scripts/app.js"></script>
+    
     <style>
         html .km-wp-light .km-content,
         html .km-wp-light .km-button,
@@ -26,146 +29,959 @@
         html .km-wp-light *:not(.k-label) > select {
             background: #fff;
         }
+        
+        #map .km-content,
+        #map .km-scroll-container,
+        #map #map_canvas {
+            display: -webkit-box;
+            width: 100%;
+        }
+        
     </style>
 </head>
 <body>
-    <!--Home-->
-    <div id="tabstrip-home"
+    
+    <!--Query view-->
+    <div id="query"
+        data-role="view"     
+        data-layout="header-footer-layout"
+        data-init="initQueryView"
+        data-title="Query">
+        
+        <div class="view-content" id="forms" data-title="Query Forms">
+            <label class="k-label">Origin:</label>      
+            <select id="ddlOrigin" class="k-select">
+                <option>Select Origin</option>
+            </select> <br>
+            
+            <label class="k-label">Destination:</label>      
+            <select id="ddlDestination" class="k-select">
+                <option>Select Destination</option>
+            </select> <br>
+            
+            <label class="k-label">Carrier Code:</label>
+            <select id="ddlCarrierCode" class="k-select">
+                <option>Select Carrier Code</option>
+            </select> <br>
+            
+            <label class="k-label">Flight Date:</label>
+            <input id="flight_date" placeholder="Select Flight Date..." class="k-input"/> <br>
+            
+            <label class="k-label">Flight Number:</label>
+            <input id="flight_number" placeholder="Select Flight Number..." class="k-input"/> <br>
+            
+			<a id="queryBtn" style="margin-top: 6%; width: 30%; text-align: center;font-weight: bold; position: fixed; left: 40%;" 
+                 class="button" data-role="button" data-click="onQueryAction">Query</a>
+        </div>
+    </div>
+    <!--Query view-->
+    
+    
+    
+    <!--Flight display view-->
+    <div id="flight_display"
         data-role="view"
-        data-title="Home">
-
+        data-layout="header-footer-layout2"        
+        data-init="flightDisplayInit"
+        data-show="flightDisplayShow"
+        data-title="Flight Display">
+        
         <div class="view-content">
-            <h1>Welcome!</h1>
-            <a id="skin-change" data-role="button" data-click="app.changeSkin">Flat</a>
-            <p>
-                Telerik AppBuilder&trade; enables you to build cross-platform device applications regardless of your
-                    development platform by combining the convenience of a local development toolset with the
-                    power and flexibility of the cloud.
-            </p>
-            <div class="img"></div>
-        </div>
-    </div>
-
-    <!--Login-->
-    <div id="tabstrip-login"
-        data-role="view"
-        data-title="Login"
-        data-model="app.loginService.viewModel">
-
-        <div class="view-content">
-            <div class="logo"></div>
-            <h3 data-bind="invisible: isLoggedIn">Enter your credentials:</h3>
-            <h1 class="welcome" data-bind="visible: isLoggedIn">Welcome, <span data-bind="text: username"></span>!
-            </h1>
-            <div class="buttonArea">
-                <input type="submit" id="logout" data-role="button" data-bind="click: onLogout, visible: isLoggedIn" class="login-button" value="Logout" />
-            </div>
-
-            <form data-bind="events: { keyup: checkEnter }">
-                <ul data-role="listview" data-style="inset" data-bind="invisible: isLoggedIn">
-                    <li>
-                        <label>
-                            Username
-                                <input type="text" data-bind="value: username" />
-                        </label>
-                    </li>
-                    <li>
-                        <label>
-                            Password
-                                <input type="password" data-bind="value: password" />
-                        </label>
-                    </li>
-                </ul>
-
-                <div class="buttonArea">
-                    <input type="submit" id="login" data-role="button" data-bind="click: onLogin, invisible: isLoggedIn" class="login-button" value="Login" />
-                </div>
-            </form>
-        </div>
-
-    </div>
-
-    <!--Location-->
-    <div id="tabstrip-location"
-        data-role="view"
-        data-title="Location"
-        data-init="app.locationService.initLocation"
-        data-show="app.locationService.show"
-        data-hide="app.locationService.hide"
-        data-model="app.locationService.viewModel"
-        data-stretch="true">
-
-        <div id="no-map" data-bind="invisible: isGoogleMapsInitialized">
-            Location requires internet connection to display the map.
-        </div>
-        <div id="map-search-wrap" data-bind="visible: isGoogleMapsInitialized">
-            <button id="map-navigate-home" data-bind="click: onNavigateHome"></button>
-            <form onsubmit="return false;">
-                <input id="map-address" type="search" data-bind="value: address" placeholder="Address" />
-                <input id="map-search" type="submit" value="" data-bind="click: onSearchAddress" />
-            </form>
-        </div>
-        <div id="map-canvas" data-bind="visible: isGoogleMapsInitialized"></div>
-
-    </div>
-
-    <!--Weather-->
-    <div id="tabstrip-weather"
-        data-role="view"
-        data-title="Weather"
-        data-model="app.weatherService.viewModel">
-
-        <div class="weather">
-            <p class="weather-title">20-Day Forecast</p>
-
-            <div class="separator">
-                <div class="dark"></div>
-                <div class="light"></div>
-            </div>
-
-            <ul class="forecast-list"
-                data-role="listview"
-                data-bind="source: weatherDataSource"
-                data-template="weather-forecast-template">
+            <ul id="flightDisplayList"
+                data-role="listview" 
+                data-source="flightDisplayDS" 
+                data-template="flight_display-lw-template"
+                data-click="onFlightDisplayItemClick"
+                data-style="inset">
             </ul>
+         </div>
+        
+        <!--Flight display template-->    
+        <script id="flight_display-lw-template" type="text/x-kendo-template">
+            <div class="item-in-list" data-role="touch" data-enable-swipe="true" data-swipe="onFlightDisplayItemSwipe">
+            	#=FlightNo#  Sectors: #=Sectors# <br>
+                #=AirCraftType # 
+                <a class="button" data-role="button" style="float: right;" data-click="onFlightDisplay_showMap">Map</a>
+                <a class="button" data-role="button" style="float: right;" data-click="onFlightDisplay_save">Save</a> <br>
+                #=BoardPoint #:  #=FlightDepartureTime # #=FlightDepartureTime # <br>
+                #=OffPoint #:  #=FlightArrivalTime # #=FlightArrivalDate #
+        	</div>
+        </script>
+        
+    </div>    
+    <!--Flight display view-->
+    
+    
+    
+    <!--Flight display detail view-->
+    <div id="flight_display_detail"
+        data-role="view"
+        data-layout="header-footer-layout2"
+        data-title="Shedule Detail">
+        
+        <div class="view-content">
+            <ul id="flightDisplayDetailList"
+                data-role="listview" 
+                data-source="flightDisplayDetailDS" 
+                data-template="flight_display_detail-lw-template"
+                data-style="inset">
+            </ul>
+         </div>
+        
+        <!--Flight display detail template-->    
+        <script id="flight_display_detail-lw-template" type="text/x-kendo-template">
+            <div class="item-in-list" data-role="touch">
+            	#=FlightNo#  Sectors: #=Sectors# <br>
+                #=AirCraftType # 
+                <a class="button" data-role="button" style="float: right;" data-click="onFlightDisplayDetail_showMap">Map</a>
+                <a class="button" data-role="button" style="float: right;" data-click="onFlightDisplayDetail_save">Save</a> <br>
+                #=BoardPoint #:  #=FlightDepartureTime # #=FlightDepartureTime # <br>
+                #=OffPoint #:  #=FlightArrivalTime # #=FlightArrivalDate #
+        	</div>
+        </script>
+        
+    </div>   
+    <!--Flight display detail view-->
+    
+    
+    
+    <!-- Flight Map view: hook up to the init event of the view and initialize the google map -->
+    <div data-role="view" 
+        id="flight_map" 
+        data-title="Map" 
+        data-show="showMap" 
+        data-stretch="true" 
+        data-layout="header-footer-layout2">
+        
+        <div id="map_canvas" style="width: 100%; height: 100%; position: absolute;"></div>
+        
+    </div>
+    <!-- Flight Map view -->
+    
+    
+    
+    <!--History view-->
+    <div id="history"
+        data-role="view"
+        data-layout="header-footer-layout2"
+        data-init="listViewHistoryInit"
+        data-title="History">
+        
+        <div class="view-content" id="forms" data-title="Query Forms" >
+            <div id="deleteAllDiv" style="display:none;">
+        		<a id="deleteAllBtn" class="deleteAllBtn" data-role="button" data-click="onHistory_deleteAll">Delete All</a> <br>
+        		<hr/>                
+        	</div>
+            
+            <ul id="list" 
+                data-role="listview" 
+                data-source="historyDS" 
+                data-template="history-lw-delete-template" 
+                data-style="inset"
+                data-hold="onHistoryListHold"
+                data-click="onHistoryListClick" >                
+            </ul>
+            
+         </div>
+        
+        <!--
+        <div id="dialog" title="Confirmation Required">
+      		Do you want to delete this row?
+    	</div>
+        
+        
+        <div class="dialogPopup" data-role="modalview" id="deleteDialog" data-title="Delete Confirmation">
+            <div data-role="header">
+                <div data-role="navbar">
+                    <span data-role="view-title">Confirmation</span>
+                </div>
+            </div>
+            Do you want to delete this row?
+            <div data-role="footer">
+                <a id="okBtn" data-align="left" data-click="onDelete" data-role="button">
+                    OK
+                </a>
+                <a id="cancelBtn" data-align="right" data-click="onCancel" data-role="button">
+                    Cancel
+                </a>
+            </div>
+        </div>     
+        -->
+        
+        <!--History template-->   
+        <script id="history-lw-delete-template" type="text/x-kendo-template">
+			<div class="item-in-list" data-role="touch">            	
+            	#=FlightNo#  Sectors: #=Sectors# 
+            	<a class="button" data-role="button" style="float: right;" data-click="onHistory_showMap">Map</a>
+                <a class="button" data-role="button" style="float: right;" data-click="onHistory_save">Save</a> <br>
+                #=AirCraftType # <br>              
+				#=BoardPoint #:  #=FlightDepartureTime # #=FlightDepartureTime # 
+            	<a id="delBtn" class="delete-btn" data-role="button" style="float: right;" data-click="onHistory_delete">Delete</a> <br>
+                #=OffPoint #:  #=FlightArrivalTime # #=FlightArrivalDate #
+        	</div>
+		</script>
+        
+    </div>
+    <!--History view-->
+    
+    
+    
+    <!--Settings view-->
+    <div id="settings"
+        data-role="view"
+        data-layout="header-footer-layout2"
+        data-title="Settings">
+        
+        <div class="view-content">
+            <a class="button-setting-first" data-role="button" href="#help">Help</a> <br>
+            <a class="button-setting" data-role="button" href="#about_app">About App</a> <br>
+            <a class="button-setting" data-role="button" href="#about_ccn">About CCN</a> <br>
+            <a class="button-setting" data-role="button" href="#term_condition">Terms & Conditions</a>     
         </div>
     </div>
-
-    <!--Weather forecast template-->
-    <script type="text/x-kendo-tmpl" id="weather-forecast-template">
-        <div>
-            <div class="position-left">
-                <span class="weather-info date">${day}</span>
-            </div>
-            <div class="position-right">
-                <span class="weather-info temperature high">${highTemperature}<sup>&deg;</sup></span>
-                <span class="weather-info temperature low">${lowTemperature}<sup>&deg;</sup></span>
-            </div>
-            <div class="position-center">
-                <span class="weather-icon ${image}"></span>
-            </div>
-        </div>
-    </script>
-
-    <!--Layout-->
-    <div data-role="layout" data-id="tabstrip-layout">
+    <!--Settings view-->
+    
+    
+    
+    <!--About app view-->
+    <div id="about_app"
+        data-role="view"
+        data-layout="header-footer-layout2"
+        data-title="Flight Schedule">
+        
+        <div class="view-content">
+            <p id="p_about_app">
+ 				The About App content. 
+            </p>
+         </div>
+    </div>
+    <!--About app view-->
+    
+    
+    
+    <!--About CCN view-->
+    <div id="about_ccn"
+        data-role="view"
+        data-layout="header-footer-layout2"
+        data-title="Flight Schedule">
+        
+        <div class="view-content">
+            <p id="p_about_ccn">
+ 				The About CCN content. 
+            </p>
+         </div>
+    </div>
+    <!--About CCN view-->
+    
+    
+    
+    <!--Help view-->
+    <div id="help"
+        data-role="view"
+        data-layout="header-footer-layout2"
+        data-title="Flight Schedule">
+        
+        <div class="view-content">
+            <p id="p_help">
+ 				The Help content. 
+            </p>
+         </div>
+    </div>
+    <!--Help view-->
+    
+    
+    <!--Term & condition view-->
+    <div id="term_condition"
+        data-role="view"
+        data-layout="header-footer-layout2"
+        data-title="Flight Schedule">
+        
+        <div class="view-content">
+            <p id="p_term_condition">
+ 				The Terms & Condition content. 
+            </p>
+            <span data-bind="text:bar"></span>
+         </div>
+    </div>
+    <!--Term & condition view-->
+    
+    
+    <!--Layout: header (history & settings)& footer(advertising) -->
+    <div data-role="layout" data-id="header-footer-layout">
 
         <!--Header-->
         <div data-role="header">
-            <div data-role="navbar">
+            <div id="layout_navbar" data-role="navbar">
                 <span data-role="view-title"></span>
+                <a href="#history" data-role="button" data-align="left">History</a>
+                <a href="#settings" data-role="button" data-align="right">Settings</a>
+                <!--
+                <a href="#test.html" data-role="button" data-align="right">Test</a>
+                -->
             </div>
         </div>
 
         <!--Footer-->
         <div data-role="footer">
-            <div data-role="tabstrip">
-                <a href="#/" data-icon="home">Home</a>
-                <a href="#tabstrip-login" data-icon="contacts">Login</a>
-                <a href="#tabstrip-location" data-icon="search">Location</a>
-                <a href="#tabstrip-weather" data-icon="globe">Weather</a>
+            <div data-role="tabstrip">  
+              	<a href="http://www.abccargo.com">
+				  	<img src="styles/images/ccn.jpg" />
+                  </a>
             </div>
         </div>
+        
     </div>
+    <!--Layout: header (history & settings) & footer(advertising)-->
+    
+    
+    <!--Layout2: header (home & settings) & footer(advertising)-->
+    <div data-role="layout" data-id="header-footer-layout2">
+
+        <!--Header-->
+        <div data-role="header">
+            <div data-role="navbar">
+                <span data-role="view-title"></span>
+                <a href="#query" data-role="button" data-align="left">Home</a>
+                <a href="#settings" data-role="button" data-align="right">Settings</a>
+            </div>
+        </div>
+
+        <!--Footer-->
+        <div data-role="footer">
+            <div data-role="tabstrip">  
+              	<a href="http://www.abccargo.com">
+				  	<img src="styles/images/ccn.jpg" />
+                  </a>
+            </div>
+        </div>
+        
+    </div>
+    <!--Layout2: header (home & settings) & footer(advertising)-->
+    
+    
+    <!--Layout3: header (home & settings) & footer(advertising)-->
+    <div data-role="layout" data-id="header-footer-layout2">
+
+        <!--Header-->
+        <div data-role="header">
+            <div data-role="navbar">
+                <span data-role="view-title"></span>
+                <a href="#query" data-role="button" data-align="left">Home</a>
+                <a href="#settings" data-role="button" data-align="right">Settings</a>
+            </div>
+        </div>
+
+        <!--Footer-->
+        <div data-role="footer">
+            <div data-role="tabstrip">  
+              	<a href="http://www.abccargo.com">
+				  	<img src="styles/images/ccn.jpg" />
+                  </a>
+            </div>
+        </div>
+        
+    </div>
+    <!--Layout3: header (home & settings) & footer(advertising)-->
+    
+    <script>
+        //Init the kendo ui mobile
+    	var app = new kendo.mobile.Application(document.body);
+	</script>
+    
+    <script>
+        
+        var markers = [
+            {
+                "title": "Alibaug",
+                "lat": "18.641400",
+                "lng": "72.872200",
+                "description": "Show the flight schedule information"
+            }
+        ,
+            {
+                "title": "Mumbai",
+                "lat": "18.964700",
+                "lng": "72.825800",
+                "description": "Show the flight schedule information"
+            }
+        ,
+            {
+                "title": "Pune",
+                "lat": "18.523600",
+                "lng": "73.847800",
+                "description": "Show the flight schedule information"
+            }
+		];
+        
+        //create a new token
+        //var token
+        
+        //initialize the google map: kendo ui mobile
+        /*
+        function showMap(e) {
+            var myOptions = {
+                center: new google.maps.LatLng(-34.397, 150.644),
+                zoom: 8,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            };
+
+            var mapElement = $("#map_canvas");
+            var container = e.view.content;
+
+            var map = new google.maps.Map(mapElement[0], myOptions);
+        }
+		*/
+        
+        
+        function onSwitchChange(e){
+        	alert(e.checked);
+        }
+
+        
+        /* Action for query view */
+        function initQueryView(e){
+        	//alert("initQueryView");
+        	//Init components
+        	var d = new Date();
+        	var month = d.getMonth() + 1;
+        	var day = d.getDate();
+
+        	var output = 
+        		((''+month).length<2 ? '0' : '') + month + '/' +
+        		((''+day).length<2 ? '0' : '') + day + '/' + d.getFullYear();
+        	$("#flight_date").val(output);
+        
+        	$("#flight_date").kendoDatePicker();
+        
+        	//Init dropdownlist carrier code
+        	var carrierCodeDS = new kendo.data.DataSource({
+                transport: {
+                // make JSONP request to http://demos.telerik.com/kendo-ui/service/products
+                read: {
+                  url: "data/getCarrierCollection.json",
+                  dataType: "json" // "jsonp" is required for cross-domain requests; use "json" for same-domain requests
+                }
+              }
+            });        	
+        
+        	//Init dropdownlist origin, destination
+        	var cityDS = new kendo.data.DataSource({
+                transport: {
+                // make JSONP request to http://demos.telerik.com/kendo-ui/service/products
+                read: {
+                  url: "data/getCityCollection.json",
+                  dataType: "json" // "jsonp" is required for cross-domain requests; use "json" for same-domain requests
+                }
+              }
+            });
+        
+        	// Data binding
+        	$("#ddlCarrierCode").kendoDropDownList({
+                dataTextField: "Carrier",
+                dataValueField: "Carrier",
+                dataSource: carrierCodeDS
+         	});
+        	
+        	$("#ddlOrigin").kendoDropDownList({
+                dataTextField: "City",
+                dataValueField: "City",
+                dataSource: cityDS
+            });
+        	
+        	$("#ddlDestination").kendoDropDownList({
+                dataTextField: "City",
+                dataValueField: "City",
+                dataSource: cityDS
+            });
+        	
+        }
+        /* End: Action for query view */
+        
+        
+        function showMap(e) {
+        
+        	var mapOptions = {
+                center: new google.maps.LatLng(markers[0].lat, markers[0].lng),
+                zoom: 10,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            };
+            var map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
+            var infoWindow = new google.maps.InfoWindow();
+            var lat_lng = new Array();
+            var latlngbounds = new google.maps.LatLngBounds();
+            for (i = 0; i < markers.length; i++) {
+                var data = markers[i]
+                var myLatlng = new google.maps.LatLng(data.lat, data.lng);
+                lat_lng.push(myLatlng);
+                var marker = new google.maps.Marker({
+                    position: myLatlng,
+                    map: map,
+                    title: data.title
+                });
+                latlngbounds.extend(marker.position);
+                (function (marker, data) {
+                    google.maps.event.addListener(marker, "click", function (e) {
+                        infoWindow.setContent(data.description);
+                        infoWindow.open(map, marker);
+                    });
+                })(marker, data);
+            }
+            map.setCenter(latlngbounds.getCenter());
+            map.fitBounds(latlngbounds);
+
+            //***********ROUTING****************//
+
+            //Intialize the Path Array
+            var path = new google.maps.MVCArray();
+
+            //Intialize the Direction Service
+            var service = new google.maps.DirectionsService();
+
+            //Set the Path Stroke Color
+            var poly = new google.maps.Polyline({ map: map, strokeColor: '#4986E7' });
+
+            //Loop and Draw Path Route between the Points on MAP
+            for (var i = 0; i < lat_lng.length; i++) {
+                if ((i + 1) < lat_lng.length) {
+                    var src = lat_lng[i];
+                    var des = lat_lng[i + 1];
+                    path.push(src);
+                    poly.setPath(path);
+                    service.route({
+                        origin: src,
+                        destination: des,
+                        travelMode: google.maps.DirectionsTravelMode.DRIVING
+                    }, function (result, status) {
+                        if (status == google.maps.DirectionsStatus.OK) {
+                            for (var i = 0, len = result.routes[0].overview_path.length; i < len; i++) {
+                                path.push(result.routes[0].overview_path[i]);
+                            }
+                        }
+                    });
+                }
+            }
+        
+        	/*
+        	//Use json ws
+            $('#map_canvas').gmap().bind('init', function() { 
+            	// This URL won't work on your localhost, so you need to change it
+            	// see http://en.wikipedia.org/wiki/Same_origin_policy
+            	$.getJSON( 'http://jquery-ui-map.googlecode.com/svn/trunk/demos/json/demo.json', function(data) {
+                                                
+            		$.each( data.markers, function(i, marker) {        
+        				        
+            			$('#map_canvas').gmap('addMarker', { 
+            				'position': new google.maps.LatLng(marker.latitude, marker.longitude), 
+            				'bounds': true 
+            			}).click(function() {
+            				$('#map_canvas').gmap('openInfoWindow', { 'content': "Show the flight schedule" }, this);
+            			});
+            		});
+        
+            	});
+            });
+        	*/
+        }
+        
+        function onCancel(e){
+        	var cancelModalView = e.sender.element.closest("data-role=modalview").data("kendoMobileModalView");
+        	cancelModalView.destroy();
+        }
+        
+        function onDelete(e){
+            var deleteModalView = e.sender.element.closest("data-role=modalview").data("kendoMobileModalView");
+        	deleteModalView.destroy();
+        }
+        
+        function onHistoryItemSwipe(e){
+        	//var confirmModalView = $("#deleteDialog").data("kendoMobileModalView");
+        	//confirmModalView.open();
+        	alert("onHistoryItemSwipe() action");
+        }
+        
+        //Action of click item of FlightDisplay listview
+        function onFlightDisplayItemSwipe(e){
+        	//var confirmModalView = $("#deleteDialog").data("kendoMobileModalView");
+        	//confirmModalView.open();
+        	//alert("onFlightDisplayItemSwipe() action");
+        }
+        
+        //Action of click item of FlightDisplay listview
+        function onFlightDisplayItemClick(e){
+        	//var confirmModalView = $("#deleteDialog").data("kendoMobileModalView");
+        	//confirmModalView.open();
+        	//alert("onFlightDisplayItemClick() action");
+        
+                
+        	//Move to the Flight Display page
+            app.navigate('#flight_display_detail','slide:right');
+        }
+        
+        //flightDisplayDetailDS: show the list of Flight Display Detail view 
+        	var flightDisplayDetailDS = new kendo.data.DataSource({
+                transport: {
+                // make JSONP request to http://demos.telerik.com/kendo-ui/service/products
+                read: {
+                  url: "data/getScheduleDetail.json",
+                  dataType: "json" // "jsonp" is required for cross-domain requests; use "json" for same-domain requests
+                },
+            	scrollable: {
+                	virtual: true
+            	}
+              }
+            });
+        
+        //flightDisplayDS: show the list of Flight Display view 
+        var flightDisplayDS = new kendo.data.DataSource({
+            transport: {
+            // make JSONP request to http://demos.telerik.com/kendo-ui/service/products
+            read: {
+              url: "data/schedule_history_array.json",
+              dataType: "json" // "jsonp" is required for cross-domain requests; use "json" for same-domain requests
+            },
+        	scrollable: {
+            	virtual: true
+        	}
+          }
+        });
+        
+        //onFlightDisplay_showMap() action
+        function onFlightDisplay_showMap(e){
+        	//Calculate the location of flight display
+        	
+        	//Move to the Flight Display page
+            app.navigate('#flight_map','slide:right');
+        }
+        
+        //onFlightDisplay_save() action
+        function onFlightDisplay_save(e){    
+        	//Move to the Flight Display page
+        	alert("onFlightDisplay_save() action");
+        }
+        
+        //onFlightDisplayDetail_showMap() action
+        function onFlightDisplayDetail_showMap(e){
+        	//Calculate the location of flight display
+        	
+        	//Move to the Flight Display page
+            app.navigate('#flight_map','slide:right');
+        }
+        
+        //onFlightDisplayDetail_save() action
+        function onFlightDisplayDetail_save(e){    
+        	//Move to the Flight Display page
+        	alert("onFlightDisplayDetail_save() action");
+        }
+        
+        //Click the Query button of query view
+        function onQueryAction(e){
+        	//alert("Valided form & move to Flight display page");
+        	//Validate Query input form
+        
+        	
+        	//Call Flight display WS & parse JSON data
+        
+        	
+        	//Move to the Flight Display page
+            app.navigate('#flight_display','slide:right');	
+        }
+        
+        
+        function flightDisplayInit(e){
+        
+        }
+        
+        
+        function flightDisplayShow(e){
+        	
+        }
+        
+        
+        
+        
+        /*
+        function onClick(e){
+        	alert("Clicked item");
+        }
+        
+        
+        var historyDS = new kendo.data.DataSource({
+            data: [
+                {id: 1, category: 1, name: "Water"},
+                {id: 2, category: 1, name: "Tea"},
+                {id: 3, category: 1, name: "Coffee"},
+                {id: 4, category: 1, name: "Juice"},
+                {id: 5, category: 2, name: "Banana"},
+                {id: 6, category: 2, name: "Apple"},
+                {id: 7, category: 2, name: "Orange"},
+                {id: 8, category: 2, name: "Berries"},
+                {id: 9, category: 2, name: "Pineaple"}
+            ]
+        });
+        
+        ,
+              schema: {
+                parse: function(response) {
+                  var products = [];
+                  for (var i = 0; i < response.length; i++) {
+                    var product = {
+                      id: response[i].ProductID,
+                      name: response[i].ProductName
+                    };
+                    products.push(product);
+                  }
+                  return products;
+                }
+              }
+        */
+        
+        
+        //historyDS: show the list of History view 
+        var historyDS = new kendo.data.DataSource({
+            transport: {
+            // make JSONP request to http://demos.telerik.com/kendo-ui/service/products
+            read: {
+              url: "data/schedule_history_array.json",
+              dataType: "json" // "jsonp" is required for cross-domain requests; use "json" for same-domain requests
+            },
+        	scrollable: {
+            	virtual: true
+        	},
+        	selectable: "multiple"
+          }
+        });
+        
+        function listViewHistoryInit(e) {
+        	//alert("listViewHistoryInit");
+        	e.view.element.find("#list").kendoTouch({
+                filter: ">li",
+                enableSwipe: true,
+                swipe: onHistorySwipe
+            });      
+        
+        	//$("deleteAllBtn").hide();
+        }
+        
+        function onHistorySwipe(e){
+        	//alert("onHistorySwipe");
+        	if ($(e.touch.target).find("[id=delBtn]").css("visibility") == "hidden")
+    		{
+    			$(e.touch.target).find("[id=delBtn]").css("visibility", "visible");
+    		} else {
+    			$(e.touch.target).find("[id=delBtn]").css("visibility", "hidden");
+    		}
+        
+        	var button = kendo.fx($(e.touch.currentTarget).find("[data-role=button]"));
+        	button.expand().duration(200).play();
+        }
+        
+        function onHistoryListHold(e){
+        	//alert("onHistoryListHold");
+        	e.item.toggleClass("listview-selected");
+            //e.preventDefault();        
+        }
+        
+        function onHistoryListClick(e){
+        	//alert("onHistoryListClick");
+        	
+        	//$("deleteAllBtn").show('fast');
+        	//$('#deleteAllDiv').toggle('slow');
+        	$('#deleteAllDiv').show('fast');
+        
+        	e.item.toggleClass("listview-selected");
+            //e.preventDefault();
+        }
+        
+        /*
+        function listViewHistoryInit(e) {
+        	//alert("listViewHistoryInit()");
+        	//$("#switch").kendoMobileSwitch({ onLabel: "Select", offLabel: "Unselect" });
+        	
+            e.view.element.find("#historyList").kendoMobileListView({
+                dataSource: historyDS,
+                template: $("#history-lw-delete-template").html()
+        	})
+            .kendoTouch({
+                filter: ">li",
+                enableSwipe: true,
+                touchstart: touchstart,
+                tap: tap,
+                swipe: swipe,
+        		hold: hold
+            });
+        }
+        
+        function hold(e){
+           alert("hold");
+           //var index = $(e.item).index();
+           //var text = $(e.item).text();    
+        }
+        
+        //navigate
+        function tap(e) {
+        	alert("tap");
+            //var itemUID = $(e.touch.currentTarget).data("uid");
+        	//console.log('=== itemUID=', itemUID);
+            //kendo.mobile.application.navigate("#edit-detailview?uid=" + itemUID);
+        }
+
+        function swipe(e) {
+            alert("swipe()");
+        
+        	//var button = kendo.fx($(e.touch.currentTarget).find("[id=delBtn]"));
+        	//if ($('#delBtn').css("visibility") == "hidden"){
+            //   // Item is hidden. Write your code.
+            //	$("#delBtn").css("visibility", "visible");
+            //}
+            //else{            
+            //   // Item is Visible. Write your code.
+            //   $("#delBtn").css("visibility", "hidden");	
+            //}
+			
+            var button = kendo.fx($(e.touch.currentTarget).find("[data-role=button]"));
+            //var button = kendo.fx($(e.touch.currentTarget).find("[id=delBtn]"));
+        	button.expand().duration(200).play();
+        }
+
+        function touchstart(e) {
+            alert("touchstart()");
+        
+            var target = $(e.touch.initialTouch),
+                listview = $("#historyList").data("kendoMobileListView"),
+                model,
+                button = $(e.touch.target).find("[data-role=button]:visible");
+			if (target.closest("[data-role=button]")[0]) {
+        		//alert("1");
+                model = dataSource.getByUid($(e.touch.target).attr("data-uid"));
+                dataSource.remove(model);
+
+                //prevent `swipe`
+                this.events.cancel();
+                e.event.stopPropagation();
+            } else if (button[0]) {
+        		//alert("2");
+                //listview.items().find("[data-role=button").show();
+        		//listview.items().find("[id=delBtn]").hide();
+        		//$(e.touch.target).find("[class=delete-btn]:visible").hide();
+        		//button.show();
+        		
+        		if ($(e.touch.target).find("[id=delBtn]").css("visibility") == "hidden")
+        		{
+        			$(e.touch.target).find("[id=delBtn]").css("visibility", "visible");
+        			//button.hide();
+        		} else {
+        			$(e.touch.target).find("[id=delBtn]").css("visibility", "hidden");
+        			listview.items().find("[data-role=button").show();
+        		}
+                //prevent `swipe`
+                this.events.cancel();
+            } else {
+        		//alert("3");
+                //listview.items().find("[data-role=button]:visible").hide();
+        		//listview.items().find("[class=delete-btn]:visible").hide();
+        		//listview.items().find("[data-role=button").show();
+        		//listview.items().find("[id=delBtn]").hide();
+            }
+        }
+        */
+        
+        //onHistory_delete() action
+        function onHistory_delete(e){
+        
+        }
+        
+        
+        //onHistory_showMap() action
+        function onHistory_showMap(e){
+        	//Calculate the location of flight display
+        	
+        	//Move to the Flight Display page
+            app.navigate('#flight_map','slide:right');
+        }
+        
+        //onHistory_save() action
+        function onHistory_save(e){    
+        	//Move to the Flight Display page
+        	alert("onHistory_save() action");
+        }
+        
+        /*
+        $("#endless-scrolling").kendoMobileListView({
+            dataSource: dataSource,
+            template: $("#endless-scrolling-template").text(),
+            endlessScroll: true
+        });
+        */
+        
+        /*
+        function initForm() {
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            url: "FlashReportMobileWebService.asmx/GetCompany",
+            dataType: "json",
+            success: function (data) {
+                for (i = 0; i < data.d.length; i++) {
+                    ddlCompany.append($("<option></option>").val(data.d[i].Company).html(data.d[i].Company));
+                };
+
+
+                $("#ddlCompany").kendoDropDownList();
+        
+        		// correct value
+        		var dataSource = [];
+                for (i = 0; i < data.d.length; i++) {                    
+                    ddlCompany.push({ "Company": data.d[i].Company})
+                };
+                $("#ddlCompany").kendoDropDownList({
+                    dataTextField: "Company",
+                    dataSource: dataSource
+                });
+                }
+        });
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            url: "FlashReportMobileWebService.asmx/ToCategoryDropDown",
+            dataType: "json",
+            success: function (data) {
+                for (i = 0; i < data.d.length; i++) {
+                    ddlCategory.append($("<option></option>").val(data.d[i].Category).html(data.d[i].Category));
+
+                };
+                $("#ddlCategory").kendoDropDownList();
+            },
+            failure: function (msg) {
+                alert(msg);
+            }
+        });
+    }
+        
+    $("#ddlCategory").change(
+        function (e) {
+            var ddlProduct= $("#ddlProduct");  
+            var dataItem = $("#ddlCategory").val();  
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                data: "{'Category':'" + dataItem + "'}",
+                url: "FlashReportWebService.asmx/ToFillProductDropDown",
+                dataType: "json",
+                success: function (data) {
+        
+                    ddlProduct.empty();
+                    for (i = 0; i < data.d.length; i++) {
+                        ddlProduct.append($("<option></option>").val(data.d[i].ProductName).html(data.d[i].ProductName));
+                    };
+                    $("#ddlProduct").kendoDropDownList();
+                },
+                failure: function (msg) {
+                    alert(msg);
+                }
+            });
+        });
+        */
+    </script>
+    
 </body>
 </html>

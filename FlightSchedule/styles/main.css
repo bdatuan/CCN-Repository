@@ -26,7 +26,7 @@ body, html {
 
 /* IMAGE STYLES*/
 .img {
-    background-image: url(../styles/images/appbuilder.png);
+    /*background-image: url(../styles/images/appbuilder.png);*/
     background-repeat: no-repeat;
     text-align: center;
     width: 320px;
@@ -53,7 +53,6 @@ body, html {
     font-size: .9em;
     -webkit-appearance: none;
 }
-
 /* MAP STYLES*/
 #no-map {
     position: absolute;
@@ -285,6 +284,16 @@ body, html {
     background: none;
 }
 
+/*  place TabStrip at bottom of Android */
+.km-root .km-android .km-view {
+ -webkit-box-direction: normal;
+ -webkit-flex-direction: column;
+}
+.km-android .km-navbar .km-view-title /* After Q2 2012 SP1 */
+{
+    visibility: visible;
+} 
+
 /* Separator Style*/
 .separator > .dark {
     background: -moz-linear-gradient(left, rgba(0,0,0,0) 0%, rgba(0,0,0,0.2) 30%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.2) 70%, rgba(0,0,0,0) 100%);
@@ -315,7 +324,7 @@ body, html {
 /* RETINA DISPLAY STYLES*/
 @media only screen and (-webkit-min-device-pixel-ratio: 2),(min-resolution: 192dpi) {
     .img {
-        background-image: url(../styles/images/appbuilder2x.png);
+        /*background-image: url(../styles/images/appbuilder2x.png);*/
         background-repeat: no-repeat;
         background-size: 100%;
     }
@@ -355,4 +364,133 @@ body, html {
         background-repeat: no-repeat;
         background-size: 100%;
     }
+}
+
+/* query view*/
+.k-primary{
+    width: 100px;
+    
+}
+.k-textbox {             
+    width: 11.8em;
+}
+.k-label {
+    margin-top: 3%;
+    display: inline-block;
+    width: 30%;
+    text-align: right;
+    font-weight: bold;
+}
+.km-android .k-label {
+    margin-top: 5%;
+    display: inline-block;
+    width: 30%;
+    text-align: right;
+    font-weight: bold;
+}
+.k-select {
+    margin-top: 2%;
+    width: 65%;
+}
+.k-input {
+    margin-top: 2%;
+    width: 65%;
+}
+.k-button {
+    margin-top: 2%;
+    width: 30%;
+    text-align: center;
+    font-weight: bold;
+}
+ 
+/* display view*/
+
+
+/* settings view*/
+
+.button-setting-first{
+    text-align: center;
+    width: 50%;   
+    font-size: .9em; 
+    margin-bottom: 5%;
+    margin-top: 20%;
+    left: 25%;
+}
+.button-setting{
+    text-align: center;
+    width: 50%;   
+    font-size: .9em; 
+    margin-bottom: 5%;
+    left: 25%;
+}
+
+/* history view*/
+.item-in-list{
+    font-size: .9em;
+}
+.km-android .item-in-list{
+    font-size: .8em;
+}
+.dialogPopup{
+    background: transparent !important;   
+    opacity: 1;
+    height: 100px;
+    width: 250px;
+    font-size: .9em;
+}
+.button-dialog{
+    text-align: center;
+    width: 50px;
+    font-size: .9em; 
+}
+.delete-btn {
+    visibility: hidden;
+    position: absolute;
+    display: inline-block;
+    bottom: .10em;
+    right: .4em;
+    margin-right: 2%;
+    background-color: #bd2729;
+    color: #fff;
+}
+#list .listview-selected {
+    background-color: #FFD8C0;
+}
+.deleteAllBtn{
+	margin-left: 5%;
+}
+/* test view */
+.wrapper {
+  height: 30px;
+}
+
+.item {
+  position: absolute;
+  background-color: white;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: 0;
+  width: 100%;
+}
+
+.action {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #F1F1F1;
+  text-align: center;
+}
+
+.centered {
+  margin: auto;
+  margin-top: 15px;
+  text-align: center;
+  color: gray;
 }
