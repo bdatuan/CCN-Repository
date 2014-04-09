@@ -18,18 +18,7 @@
     });
     
     FlightDisplayDetailViewModel = kendo.data.ObservableObject.extend({
-        onFlightDisplayDetail_showMap: function (e) {
-            alert("onFlightDisplayDetail_showMap()");
-            //Calculate the location of flight display
-        	
-        	//Move to the Flight Display page
-            app.navigate('#flight_map','slide:right');
-        },
         
-        onFlightDisplayDetail_save: function (e) {
-            //Move to the Flight Display page
-        	alert("onFlightDisplayDetail_save()");  
-        },
         
     });
     
@@ -39,11 +28,33 @@
             $("#flightDisplayDetailList").kendoMobileListView({
                 dataSource: flightDisplayDetailDS,
                 template: $("#flight_display_detail-lw-template").text(),
-                fixedHeaders: true
+                fixedHeaders: true,
+                
+                click: function (e) {                
+                    //alert("onClick()");
+                    var item = $(e.target);
+                    var text = item.text().trim(), length = text.length;
+                    
+                    if (length > 10){
+                        e.preventDefault();                        
+                    } else if (text == "Save"){
+                        //Move to the Flight Display page
+        				//alert("onFlightDisplayDetail_save()");
+                    } else if (text == "Map"){
+                    	//alert("onFlightDisplayDetail_showMap()");
+                        //Calculate the location of flight display
+                    	
+                    	//Move to the Flight Display page
+                        app.application.navigate('#flight_map','slide:right');                       
+                    } else {
+                        e.preventDefault();
+                    }
+                }
+                
             });
         },
 
-        flightDisplayDetailService: new FlightDisplayDetailViewModel()        
+        viewModel: new FlightDisplayDetailViewModel()        
         
     };
     

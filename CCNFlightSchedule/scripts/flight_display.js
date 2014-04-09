@@ -18,47 +18,49 @@
     });
     
     FlightDisplayViewModel = kendo.data.ObservableObject.extend({
-        onFlightDisplay_showMap: function (e) {
-            alert("onFlightDisplay_showMap()");
-        
-        	//Calculate the location of flight display
-        	
-        	//Move to the Flight Display page
-            app.navigate('#flight_map','slide:right');
-        
-        	e.preventDefault();    
-        },
-        
-        onFlightDisplay_save: function (e) {
-            //Move to the Flight Display page
-        	alert("onFlightDisplay_save()");   
-        }
-        
+                
     });
     
     app.flightDisplayService = {
         flightDisplayInit: function (e) {
             //alert("flightDisplayInit");
+            
             $("#flightDisplayList").kendoMobileListView({
                 dataSource: flightDisplayDS,
-                template: $("#flight_display-lw-template").text(),
+                template: $("#flight_display-lw-template").html(),
                 fixedHeaders: true,
+                
                 click: function (e) {                
-                    alert("onClick()");
-                    console.log("app: onLibraryItemClick e:" + e);
-                    console.log("app: onLibraryItemClick e.item:" + e.item);
-                    console.log("app: onLibraryItemClick e.target:" + e.target);
-                    console.log("app: onLibraryItemClick e.dataItem:" + e.dataItem);
-            		//Move to the Flight Display page                    
-                	//app.application.navigate('#flight_display_detail','slide:right');
-                    //e.preventDefault();
+                    //alert("onClick()");
+                    var item = $(e.target);
+                    var text = item.text().trim(), length = text.length;
+                    
+                    if (length > 10){
+                        //alert("move page");
+                        app.application.navigate('#flight_display_detail','slide:right');
+                        e.preventDefault();                        
+                    } else if (text == "Save"){
+                        //Move to the Flight Display page
+        				//alert("onFlightDisplay_save()");  
+                        e.preventDefault();
+                    } else if (text == "Map"){
+                    	//alert("onFlightDisplay_showMap()");
+        
+                    	//Calculate the location of flight display
+                    	
+                    	//Move to the Flight Display page
+                        app.application.navigate('#flight_map','slide:right');
+                    
+                    	e.preventDefault();                        
+                    } else {
+                        e.preventDefault();
+                    }
                 }
+                
             });
         },
-		
         
-        flightDisplayService: new FlightDisplayViewModel()        
-        
+        viewModel: new FlightDisplayViewModel()
     };
     
 })(window);

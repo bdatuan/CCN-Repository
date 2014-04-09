@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title></title>
+    <title>Flight Schedule Application</title>
     <meta charset="utf-8" />
     
     <link href="kendo/styles/kendo.mobile.all.min.css" rel="stylesheet" />
@@ -56,7 +56,7 @@
         data-model="app.queryService.viewModel"
         data-title="Query">
         
-        <div class="view-content" id="forms" data-title="Query Forms">
+        <div class="view-content" id="queryForms" data-title="Query Forms">
             <label class="k-label">Origin:</label>      
             <select id="ddlOrigin" class="k-select">
                 <option>Select Origin</option>
@@ -96,22 +96,23 @@
         
         <div class="view-content">
             <ul id="flightDisplayList"
-                data-role="listview" 
+                data-role="listview"
                 data-style="inset">
             </ul>
+                              
+            <!--Flight display template-->    
+            <script id="flight_display-lw-template" type="text/x-kendo-template">
+                <div class="item-in-list" data-role="touch">                                
+                	#=FlightNo#  Sectors: #=Sectors# <br>
+                    #=AirCraftType #            
+                    <a class="button" data-role="button" style="float: right;">Map</a>
+                    <a class="button" data-role="button" style="float: right;">Save</a> <br>
+                    #=BoardPoint #:  #=FlightDepartureTime # #=FlightDepartureTime # <br>
+                    #=OffPoint #:  #=FlightArrivalTime # #=FlightArrivalDate #
+            	</div>
+            </script>
+            
          </div>
-        
-        <!--Flight display template-->    
-        <script id="flight_display-lw-template" type="text/x-kendo-template">
-            <div class="item-in-list" data-role="touch">
-            	#=FlightNo#  Sectors: #=Sectors# <br>
-                #=AirCraftType # 
-                <a class="button" data-role="button" style="float: right;" data-bind="click: onFlightDisplay_showMap">Map</a>
-                <a class="button" data-role="button" style="float: right;" data-bind="click: onFlightDisplay_save">Save</a> <br>
-                #=BoardPoint #:  #=FlightDepartureTime # #=FlightDepartureTime # <br>
-                #=OffPoint #:  #=FlightArrivalTime # #=FlightArrivalDate #
-        	</div>
-        </script>
         
     </div>    
     <!--Flight display view-->
@@ -138,8 +139,8 @@
             <div class="item-in-list" data-role="touch">
             	#=FlightNo#  Sectors: #=Sectors# <br>
                 #=AirCraftType # 
-                <a class="button" data-role="button" style="float: right;" data-bind="click: onFlightDisplayDetail_showMap">Map</a>
-                <a class="button" data-role="button" style="float: right;"  data-bind="click: onFlightDisplayDetail_save">Save</a> <br>
+                <a class="button" data-role="button" style="float: right;">Map</a>
+                <a class="button" data-role="button" style="float: right;">Save</a> <br>
                 #=BoardPoint #:  #=FlightDepartureTime # #=FlightDepartureTime # <br>
                 #=OffPoint #:  #=FlightArrivalTime # #=FlightArrivalDate #
         	</div>
@@ -175,9 +176,10 @@
         data-model="app.historyService.viewModel"
         data-title="History">
         
-        <div class="view-content" id="forms" data-title="Query Forms" >
+        <div class="view-content" id="historyForms" data-title="Query Forms" >
             <div id="deleteAllDiv" style="display:none;">
-        		<a id="deleteAllBtn" class="deleteAllBtn" data-role="button" data-bind="click: onHistory_deleteAll">Delete All</a> <br>
+        		<a id="deleteAllBtn" class="deleteAllBtn" data-role="button" 
+                    data-bind="click: onHistory_deleteAll">Delete All</a> <br>
         		<hr/>                
         	</div>
             
@@ -193,11 +195,11 @@
         <script id="history-lw-delete-template" type="text/x-kendo-template">
 			<div class="item-in-list" data-role="touch">            	
             	#=FlightNo#  Sectors: #=Sectors# 
-            	<a class="button" data-role="button" style="float: right;" data-bind="click: onHistory_showMap">Map</a>
-                <a class="button" data-role="button" style="float: right;" data-bind="click: onHistory_save">Save</a> <br>
+            	<a class="button" data-role="button" style="float: right;">Map</a>
+                <a class="button" data-role="button" style="float: right;">Save</a> <br>
                 #=AirCraftType # <br>              
 				#=BoardPoint #:  #=FlightDepartureTime # #=FlightDepartureTime # 
-            	<a id="delBtn" class="delete-btn" data-role="button" style="float: right;" data-bind="click: onHistory_delete">Delete</a> <br>
+            	<a id="delBtn" class="delete-btn" data-role="button" style="float: right;">Delete</a> <br>
                 #=OffPoint #:  #=FlightArrivalTime # #=FlightArrivalDate #
         	</div>
 		</script>
@@ -306,7 +308,7 @@
         <div data-role="footer">
             <div data-role="tabstrip">  
               	<a href="http://www.abccargo.com">
-				  	<img src="styles/images/ccn.jpg" />
+				  	<img src="styles/images/ccn.jpg" alt="CCN images" />
                   </a>
             </div>
         </div>
@@ -331,7 +333,7 @@
         <div data-role="footer">
             <div data-role="tabstrip">  
               	<a href="http://www.abccargo.com">
-				  	<img src="styles/images/ccn.jpg" />
+				  	<img src="styles/images/ccn.jpg" alt="CCN images" />
                   </a>
             </div>
         </div>

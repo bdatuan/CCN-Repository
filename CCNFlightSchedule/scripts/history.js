@@ -19,28 +19,7 @@
     });
     
     HistoryViewModel = kendo.data.ObservableObject.extend({
-        onHistoryListHold: function (e) {
-            //alert("onHistoryListHold");
-        	e.item.toggleClass("listview-selected");
-            //e.preventDefault();    
-        },
-        
-        onHistory_delete: function (e) {
-            //alert("onHistory_delete");  
-        },
-        
-        onHistory_showMap: function (e) {
-            //Calculate the location of flight display
-        	
-        	//Move to the Flight Display page
-            app.application.navigate('#flight_map','slide:right');  
-        },
-        
-        onHistory_save: function (e) {
-            //Move to the Flight Display page
-        	//alert("onHistory_save() action");  
-        }
-        
+                
     });
     
     app.historyService = {
@@ -53,11 +32,30 @@
                 click: function (e) {
                     //alert("onHistoryListClick");
         	
-                	//$("deleteAllBtn").show('fast');
-                	//$('#deleteAllDiv').toggle('slow');
                 	$('#deleteAllDiv').show('fast');
-                
+                	
                 	e.item.toggleClass("listview-selected");
+                    
+                    var item = $(e.target);
+                    var text = item.text().trim(), length = text.length;
+                    
+                    if (length > 10){
+                        e.preventDefault();                        
+                    } else if (text == "Save"){
+                        //Move to the Flight Display page
+        				//alert("onHistory_save()");
+                    } else if (text == "Map"){
+                    	//alert("onHistory_showMap()");
+                        //Calculate the location of flight display
+                    	
+                    	//Move to the Flight Display page
+                        app.application.navigate('#flight_map','slide:right');                       
+                    } else if (text == "Delete"){
+                       //alert("onHistory_delete");
+                        
+                    } else {
+                        e.preventDefault();
+                    }
                 }
             });
             
