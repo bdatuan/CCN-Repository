@@ -167,39 +167,7 @@
         
     </div>    
     <!--Flight display view-->
-    
-    
-    
-    <!--Flight display detail view-->
-    <div id="flight_display_detail"
-        data-role="view"
-        data-layout="header-footer-layout2"
-        data-init="app.flightDisplayDetailService.flightDisplayDetailInit"
-        data-model="app.flightDisplayDetailService.viewModel"
-        data-title="Schedule Detail">
         
-        <div class="view-content">
-            <ul id="flightDisplayDetailList"
-                data-role="listview" 
-                data-style="inset">
-            </ul>
-         </div>
-        
-        <!--Flight display detail template-->    
-        <script id="flight_display_detail-lw-template" type="text/x-kendo-template">
-            <div class="item-in-list" data-role="touch">
-            	#=FlightNo#  Sectors: #=Sectors# <br>
-                #=AirCraftType # 
-                <a class="button" data-role="button" style="float: right;">Map</a>
-                <a class="button" data-role="button" style="float: right;">Save</a> <br>
-                #=BoardPoint #:  #=FlightDepartureTime # #=FlightDepartureTime # <br>
-                #=OffPoint #:  #=FlightArrivalTime # #=FlightArrivalDate #
-        	</div>
-        </script>
-        
-    </div>   
-    <!--Flight display detail view-->
-    
     
     
     <!-- Flight Map view: hook up to the init event of the view and initialize the google map -->
