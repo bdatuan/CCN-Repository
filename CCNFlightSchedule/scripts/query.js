@@ -11,76 +11,105 @@
                  
         onQueryAction: function () {
         	//alert("onQueryAction");
+            
         	//Validate Query input form
-        
+        	if(validator.validate()) {
+                //alert("success");
+                //alert("ddlOrigin=" + $("#ddlOrigin").val() );
+                //alert("ddlDestination=" + $("#ddlDestination").val() );
+                //alert("ddlCarrierCode=" + $("#ddlCarrierCode").val() );
+                //alert("flight_date=" + $("#flight_date").val() );
+                //alert("flight_number=" + $("#flight_number").val() );
+            }
+            else {
+                alert("Please input the mandatory field");
+                return;
+            }
         	
+            //Format the date: ddmmyyyy
+            var strDate = $("#flight_date").val();
+            var dateParts = strDate.split("/");
+            var month = dateParts[0].toString();
+            if (month.length == 1)
+            	month = "0" + month;
+            var day = dateParts[1].toString();
+            if (day.length == 1)
+            	day = "0" + day;
+            var year = dateParts[2].toString();
+            strDate = day + month + year;
+            //alert("strDate=" + strDate);
+            
         	//Call Flight display WS & parse JSON data
-        
-        	
+            
         	//Move to the Flight Display page
-            app.application.navigate('#flight_display','slide:right');	
+            var url = "#flight_display?token=123&origin=";
+            url += $("#ddlOrigin").val() + "&destination=" + $("#ddlDestination").val();
+            url += "&carrier=" + $("#ddlCarrierCode").val() + "&flightdate=" + strDate;
+            url += "&flightNo=" + $("#flight_number").val();
+            
+            //Move to Flight Display page
+            //alert("url=" + url);
+            app.application.navigate(url, 'slide:right');	
             
         }
         
     });
     
     app.queryService = {
-        initQueryView: function () {
+        initQueryView: function (e) {
             //alert("initQueryView");
         	//Init components
             
         	var d = new Date();
         	var month = d.getMonth() + 1;
-        	var day = d.getDate();
-
-        	var output = 
-        		((''+month).length<2 ? '0' : '') + month + '/' +
-        		((''+day).length<2 ? '0' : '') + day + '/' + d.getFullYear();
+            var day = d.getDate();
+            day = day.toString();
+        	var output = month + '/' + day + '/' + d.getFullYear();
+            //alert("output=" + output);
+            
+        	$("#flight_date").kendoDatePicker({ dateFormat: 'ddmmyyyy' });
         	$("#flight_date").val(output);
-        
-        	$("#flight_date").kendoDatePicker();
-        
+        	
         	//Init dropdownlist carrier code
         	var carrierCodeDS = new kendo.data.DataSource({
                 transport: {
-                // make JSONP request to http://demos.telerik.com/kendo-ui/service/products
                 read: {
-                  url: "data/getCarrierCollection.json",
-                  dataType: "json" // "jsonp" is required for cross-domain requests; use "json" for same-domain requests
+                  url: "http://apidev.ccnhub.com/v1/FlightSchedule.WebAPI/carriers/",
+                  dataType: "json" 
                 }
               }
             });        	
-        
+        	
         	//Init dropdownlist origin, destination
         	var cityDS = new kendo.data.DataSource({
                 transport: {
-                // make JSONP request to http://demos.telerik.com/kendo-ui/service/products
                 read: {
-                  url: "data/getCityCollection.json",
-                  dataType: "json" // "jsonp" is required for cross-domain requests; use "json" for same-domain requests
+                  url: "http://apidev.ccnhub.com/v1/FlightSchedule.WebAPI/cities/",
+                  dataType: "json" 
                 }
               }
             });
         
         	// Data binding
         	$("#ddlCarrierCode").kendoDropDownList({
-                dataTextField: "Carrier",
-                dataValueField: "Carrier",
+                dataTextField: "Name",
+                dataValueField: "Name",
                 dataSource: carrierCodeDS
          	});
         	
         	$("#ddlOrigin").kendoDropDownList({
-                dataTextField: "City",
-                dataValueField: "City",
+                dataTextField: "LongName",
+                dataValueField: "Name",
                 dataSource: cityDS
             });
         	
         	$("#ddlDestination").kendoDropDownList({
-                dataTextField: "City",
-                dataValueField: "City",
+                dataTextField: "LongName",
+                dataValueField: "Name",
                 dataSource: cityDS
             });
             
+            validator = e.view.element.kendoValidator().data("kendoValidator");
         },
         
         show: function () {

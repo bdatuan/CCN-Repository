@@ -402,7 +402,6 @@ body, html {
     text-align: center;
     font-weight: bold;
 }
- 
 /* display view*/
 
 
@@ -427,6 +426,10 @@ body, html {
 /* history view*/
 .item-in-list{
     font-size: .9em;
+}
+.item-detail-in-list {
+    font-size: .9em;
+    display: none
 }
 .km-android .item-in-list{
     font-size: .8em;
