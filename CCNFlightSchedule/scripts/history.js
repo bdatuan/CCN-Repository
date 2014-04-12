@@ -5,6 +5,7 @@
         
     
     HistoryViewModel = kendo.data.ObservableObject.extend({
+        isVisible: false
         
     });
     
@@ -108,7 +109,9 @@
                         //$("#list").data("kendoListView").dataSource.read();
                         app.historyService.refresh();
                     } else if (length == 0){
-                        //alert("Button pressed");
+                        //alert("Arrow Button pressed");
+                        url = "#history_detail?id=" + id;
+                        app.application.navigate(url, 'slide:right');
                         /*
                         var xyz = $(e.touch.target).closest("[role='option']");
                         if (xyz.find("[id=detail-history]").css("display") == "none"){
@@ -163,7 +166,7 @@
                     //alert("value=" + value);
                     strIndex += "\"" + value.toString() + "\",";
                 });
-                strIndex = strIndex.substring(0,strIndex.length - 1)
+                strIndex = strIndex.substring(0,strIndex.length - 1);
                 strIndex += "] }";
                 //alert("strIndex=" + strIndex);
                 

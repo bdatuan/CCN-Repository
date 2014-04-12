@@ -21,8 +21,8 @@
     <!--Defiend JS-->
     <script src="scripts/query.js"></script>
     <script src="scripts/history.js"></script>
+    <script src="scripts/history_detail.js"></script>
     <script src="scripts/flight_display.js"></script>
-    <script src="scripts/flight_display_detail.js"></script>
     <script src="scripts/flight_map.js"></script>
     <script src="scripts/about_app.js"></script>
     <script src="scripts/about_ccn.js"></script>
@@ -204,12 +204,6 @@
             <ul id="list" 
                 data-role="listview"
                 data-style="inset" >
-                
-                <ul id="listDetail" 
-                    data-role="listview"
-                    data-style="inset" >                    
-                </ul>
-                
             </ul>            
          </div>
         
@@ -223,10 +217,21 @@
             	<a id="delBtn" class="delete-btn" data-role="button" style="float: right;">Delete</a> <br>
                 #=Origin # #=Id # <br>
                 <input id="arrowBtn" type="image" src="styles/images/arrow.png" style="margin-left: 45%; width: 10%"/>   
-        	</div>
+        		<!--
+            	<ul id="listDetail" 
+                    data-role="listview"
+            		data-bind="visible: isVisible"
+                    data-style="inset" >
+                    <li><a>Cannes</a></li>
+                    <li><a>Liverpool</a></li>
+                    <li><a>London</a></li>
+                </ul>
+            	-->
+            </div>
 		</script>
         
         <!--History detail template-->   
+        <!--
         <script id="history-lw-detail-template" type="text/x-kendo-template">
 			<div class="item-in-list" data-role="touch">            	
             	#=Carrier#  #=Destination#  
@@ -242,9 +247,39 @@
                 </div>
         	</div>
 		</script>
-        
+        -->
     </div>
     <!--History view-->
+    
+    
+    <!--History Detail view-->
+    <div id="history_detail"
+        data-role="view"
+        data-layout="header-footer-layout2"
+        data-init="app.historyDetailService.listViewHistoryDetailInit"
+        data-show="app.historyDetailService.listViewHistoryDetailShow"
+        data-model="app.historyDetailService.viewModel"
+        data-title="History Detail">
+        
+        <div class="view-content" id="historyDetailForms" data-title="Query Forms" >            
+           <ul id="listDetail" 
+                data-role="listview"
+                data-style="inset" >
+            </ul>            
+         </div>
+         
+        <!--History detail template-->   
+        <script id="history-lw-detail-template" type="text/x-kendo-template">
+			<div class="item-in-list" data-role="touch">            	
+            	#=AirCraftTypeCode# #=Arrival# <br>
+            	#=CarrierCode# #=Departure# #=Destination# 
+                <a class="button" data-role="button" style="float: right;">Map</a> <br>
+                #=FlightNumber #  #=Origin # 	
+        	</div>
+		</script>
+        
+    </div>
+    <!--History Detail view-->
     
     
     
