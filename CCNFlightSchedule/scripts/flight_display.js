@@ -57,7 +57,7 @@
             url = "http://apidev.ccnhub.com/v1/FlightSchedule.WebAPI/flightschedule/?token=1234&origin=SIN&destination=SYD&carrier=SQ";
             
             //Datasource of flightDisplayList
-            var arrFlightDetail = [];
+            var arrFlightDetail = "";
             
             //Call WS and parse JSON data
             $.ajax({
@@ -92,19 +92,20 @@
                                 flightDetailItem += "\"Destination\":\"" + this.Destination + "\",";
                                 flightDetailItem += "\"FlightNumber\":\"" + this.FlightNumber + "\",";
                                 flightDetailItem += "\"Origin\":\"" + this.Origin + "\"";
-                            	flightDetailItem += "}"; 
-                                
-                                flightDetailItem = JSON.stringify(flightDetailItem);
+                            	flightDetailItem += "},"; 
                                 //alert("flightDetailItem=" + flightDetailItem);
-                            	//console.log("flightDetailItem=" + flightDetailItem);
-                            	arrFlightDetail.push(flightDetailItem);
+                				//console.log("flightDetailItem=" + flightDetailItem);                	
+                                arrFlightDetail += flightDetailItem;
                         	});                            
                         });                        
                     });
                     
+                    arrFlightDetail = arrFlightDetail.substring(0,arrFlightDetail.length - 1);
+                    arrFlightDetail = $.parseJSON('[' + arrFlightDetail + ']');
+                                        
                     //alert("arrFlightDetail=" + arrFlightDetail.toString());
                     //$.each( arrFlightDetail, function( index, value ){
-                    //	 alert("flightDetailItem out=" + value);                       
+                    //	 alert("flightDetailItem=" + value);                       
                     //});
                     
                     //Set value of data-binding
