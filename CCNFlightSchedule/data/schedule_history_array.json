@@ -1,0 +1,68 @@
+[
+    {
+		"BoardPoint": "SIN",
+        "OffPoint": "LAX",
+        "FlightNo": "AA0123",
+        "FlightDepartureDate": "25-Dec-14",
+        "FlightDepartureTime": "12:00",
+        "FlightArrivalDate": "26-Dec-14",
+        "FlightArrivalTime": "01:00",
+        "AirCraftType": "BOEING 747",
+		"Sectors" : "2"
+	},
+	{
+		"BoardPoint": "LAX",
+        "OffPoint": "JFK",
+        "FlightNo": "AA0234",
+        "FlightDepartureDate": "26-Dec-14",
+        "FlightDepartureTime": "04:00",
+        "FlightArrivalDate": "26-Dec-14",
+        "FlightArrivalTime": "18:00",
+        "AirCraftType": "BOEING 747",
+		"Sectors" : "3"
+	},
+	{
+		"BoardPoint": "SIN",
+        "OffPoint": "JFK",
+        "FlightNo": "AA0125",
+        "FlightDepartureDate": "25-Dec-14",
+        "FlightDepartureTime": "18:00",
+        "FlightArrivalDate": "26-Dec-14",
+        "FlightArrivalTime": "15:00",
+        "AirCraftType": "AIRBUS 380",
+		"Sectors" : "4"
+	},
+	{
+		"BoardPoint": "SIN",
+        "OffPoint": "LAX",
+        "FlightNo": "AA0123",
+        "FlightDepartureDate": "25-Dec-14",
+        "FlightDepartureTime": "12:00",
+        "FlightArrivalDate": "26-Dec-14",
+        "FlightArrivalTime": "01:00",
+        "AirCraftType": "BOEING 747",
+		"Sectors" : "2"
+	},
+	{
+		"BoardPoint": "LAX",
+        "OffPoint": "JFK",
+        "FlightNo": "AA0234",
+        "FlightDepartureDate": "26-Dec-14",
+        "FlightDepartureTime": "04:00",
+        "FlightArrivalDate": "26-Dec-14",
+        "FlightArrivalTime": "18:00",
+        "AirCraftType": "BOEING 747",
+		"Sectors" : "3"
+	},
+	{
+		"BoardPoint": "SIN",
+        "OffPoint": "JFK",
+        "FlightNo": "AA0125",
+        "FlightDepartureDate": "25-Dec-14",
+        "FlightDepartureTime": "18:00",
+        "FlightArrivalDate": "26-Dec-14",
+        "FlightArrivalTime": "15:00",
+        "AirCraftType": "AIRBUS 380",
+		"Sectors" : "4"
+	}
+]

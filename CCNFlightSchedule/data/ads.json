@@ -1,0 +1,14 @@
+{
+    "response": {
+        "usermessage": "message",
+        "developermessage": "messages xxx",
+        "build": "26",
+        "code": "0122",
+        "statuscode": "http://statuscode.ccnhub.com/0122"
+    },
+    "ads": {
+        "id": "123456-2626-262626-2626-262626",
+        "urlpath": "http://cdn.ccnhub.com/ads/abc2012.jpg",
+        "urllink": "http://www.abccargo.com/promotions"
+    }
+}

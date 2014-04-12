@@ -1,0 +1,48 @@
+[
+    {
+        "Origin": "SIN",
+        "Destination": "JFK",
+        "FlightDate": "25-Dec-14",
+        "FlightNumber": "",
+        "ScheduleDetails": [
+            {
+                "Route": [
+                    {
+                        "BoardPoint": "SIN",
+                        "OffPoint": "LAX",
+                        "FlightNo": "SQ0123",
+                        "FlightDepartureDate": "25-Dec-14",
+                        "FlightDepartureTime": "12:00",
+                        "FlightArrivalDate": "26-Dec-14",
+                        "FlightArrivalTime": "01:00",
+                        "AirCraftType": "BOEING 747"
+                    },
+                    {
+                        "BoardPoint": "LAX",
+                        "OffPoint": "JFK",
+                        "FlightNo": "SQ8125",
+                        "FlightDepartureDate": "26-Dec-14",
+                        "FlightDepartureTime": "05:00",
+                        "FlightArrivalDate": "26-Dec-14",
+                        "FlightArrivalTime": "13:00",
+                        "AirCraftType": "Trucking"
+                    }
+                ]
+            },
+            {
+                "Route": [
+                    {
+                        "BoardPoint": "SIN",
+                        "OffPoint": "JFK",
+                        "FlightNo": "SQ0223",
+                        "FlightDepartureDate": "25-Dec-14",
+                        "FlightDepartureTime": "18:00",
+                        "FlightArrivalDate": "26-Dec-14",
+                        "FlightArrivalTime": "09:00",
+                        "AirCraftType": "AIRBUS 380"
+                    }
+                ]
+            }
+        ]
+    }
+]

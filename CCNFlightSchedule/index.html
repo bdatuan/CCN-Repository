@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Flight Schedule Application</title>
+    <meta charset="utf-8" />
+    
+    <link href="kendo/styles/kendo.mobile.all.min.css" rel="stylesheet" />
+    <link href="http://cdn.kendostatic.com/2013.1.514/styles/kendo.default.min.css" rel="stylesheet" />
+    <link href="kendo/styles/kendo.common.min.css" rel="stylesheet" />
+    <link href="kendo/styles/kendo.dataviz.min.css" rel="stylesheet" />
+    
+    <link href="styles/main.css" rel="stylesheet" />
+    
+    <script src="cordova.js"></script>
+    <script src="kendo/js/jquery.min.js"></script>
+    <!-- <script src="kendo/js/kendo.mobile.min.js"></script> -->
+    <script src="kendo/js/kendo.all.min.js"></script>
+    <script src="kendo/js/jquery.ui.map.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=true"></script>
+    
+    <script src="scripts/query.js"></script>
+    <script src="scripts/history.js"></script>
+    <script src="scripts/flight_display.js"></script>
+    <script src="scripts/flight_display_detail.js"></script>
+    <script src="scripts/flight_map.js"></script>
+    
+    <style>
+        html .km-wp-light .km-content,
+        html .km-wp-light .km-button,
+        html .km-wp-light .km-navbar,
+        html .km-wp-light .km-detail,
+        html .km-wp-light *:not(.k-label) > input:not(.k-input),
+        html .km-wp-light .k-dropdown,
+        html .km-wp-light *:not(.k-label) > textarea,
+        html .km-wp-light *:not(.k-label) > select {
+            background: #fff;
+        }
+        
+        #map .km-content,
+        #map .km-scroll-container,
+        #map #map_canvas {
+            display: -webkit-box;
+            width: 100%;
+        }
+        
+    </style>
+</head>
+<body>
+    
+    <!--Query view-->
+    <div id="query"
+        data-role="view"     
+        data-layout="header-footer-layout"
+        data-init="app.queryService.initQueryView"
+        data-show="app.queryService.show"
+        data-model="app.queryService.viewModel"
+        data-title="Query">
+        
+        <div class="view-content" id="queryForms" data-title="Query Forms">
+            <label class="k-label">Origin:</label>      
+            <select id="ddlOrigin" class="k-select">
+                <option>Select Origin</option>
+            </select> <br>
+            
+            <label class="k-label">Destination:</label>      
+            <select id="ddlDestination" class="k-select">
+                <option>Select Destination</option>
+            </select> <br>
+            
+            <label class="k-label">Carrier Code:</label>
+            <select id="ddlCarrierCode" class="k-select">
+                <option>Select Carrier Code</option>
+            </select> <br>
+            
+            <label class="k-label">Flight Date:</label>
+            <input id="flight_date" placeholder="Select Flight Date..." class="k-input"/> <br>
+            
+            <label class="k-label">Flight Number:</label>
+            <input id="flight_number" placeholder="Select Flight Number..." class="k-input"/> <br>
+            
+			<a id="queryBtn" style="margin-top: 6%; width: 30%; text-align: center;font-weight: bold; position: fixed; left: 40%;" 
+                 class="button" data-role="button" data-bind="click: onQueryAction">Query</a>
+        </div>
+    </div>
+	<!--Query view-->
+    
+        
+    <!--Flight display view-->
+    <div id="flight_display"
+        data-role="view"
+        data-layout="header-footer-layout2"
+        data-init="app.flightDisplayService.flightDisplayInit"
+        data-show="app.flightDisplayService.flightDisplayShow"
+        data-model="app.flightDisplayService.viewModel"
+        data-title="Flight Display">
+        
+        <div class="view-content">
+            <ul id="flightDisplayList"
+                data-role="listview"
+                data-style="inset">
+            </ul>
+                              
+            <!--Flight display template-->    
+            <script id="flight_display-lw-template" type="text/x-kendo-template">
+                <div class="item-in-list" data-role="touch">                                
+                	#=FlightNo#  Sectors: #=Sectors# <br>
+                    #=AirCraftType #            
+                    <a class="button" data-role="button" style="float: right;">Map</a>
+                    <a class="button" data-role="button" style="float: right;">Save</a> <br>
+                    #=BoardPoint #:  #=FlightDepartureTime # #=FlightDepartureTime # <br>
+                    #=OffPoint #:  #=FlightArrivalTime # #=FlightArrivalDate #
+            	</div>
+            </script>
+            
+         </div>
+        
+    </div>    
+    <!--Flight display view-->
+    
+    
+    
+    <!--Flight display detail view-->
+    <div id="flight_display_detail"
+        data-role="view"
+        data-layout="header-footer-layout2"
+        data-init="app.flightDisplayDetailService.flightDisplayDetailInit"
+        data-model="app.flightDisplayDetailService.viewModel"
+        data-title="Schedule Detail">
+        
+        <div class="view-content">
+            <ul id="flightDisplayDetailList"
+                data-role="listview" 
+                data-style="inset">
+            </ul>
+         </div>
+        
+        <!--Flight display detail template-->    
+        <script id="flight_display_detail-lw-template" type="text/x-kendo-template">
+            <div class="item-in-list" data-role="touch">
+            	#=FlightNo#  Sectors: #=Sectors# <br>
+                #=AirCraftType # 
+                <a class="button" data-role="button" style="float: right;">Map</a>
+                <a class="button" data-role="button" style="float: right;">Save</a> <br>
+                #=BoardPoint #:  #=FlightDepartureTime # #=FlightDepartureTime # <br>
+                #=OffPoint #:  #=FlightArrivalTime # #=FlightArrivalDate #
+        	</div>
+        </script>
+        
+    </div>   
+    <!--Flight display detail view-->
+    
+    
+    
+    <!-- Flight Map view: hook up to the init event of the view and initialize the google map -->
+    <div data-role="view" 
+        id="flight_map" 
+        data-title="Map" 
+        data-show="app.flightMapService.showMap"
+        data-model="app.flightMapService.viewModel"
+        data-stretch="true" 
+        data-layout="header-footer-layout2">
+        
+        <div id="map_canvas" style="width: 100%; height: 100%; position: absolute;"></div>
+        
+    </div>
+    <!-- Flight Map view -->
+    
+    
+    
+    <!--History view-->
+    <div id="history"
+        data-role="view"
+        data-layout="header-footer-layout2"
+        data-init="app.historyService.listViewHistoryInit"
+        data-show="app.historyService.listViewHistoryShow"
+        data-model="app.historyService.viewModel"
+        data-title="History">
+        
+        <div class="view-content" id="historyForms" data-title="Query Forms" >
+            <div id="deleteAllDiv" style="display:none;">
+        		<a id="deleteAllBtn" class="deleteAllBtn" data-role="button" 
+                    data-bind="click: onHistory_deleteAll">Delete All</a> <br>
+        		<hr/>                
+        	</div>
+            
+            <ul id="list" 
+                data-role="listview"
+                data-style="inset"
+                data-bind="events: { hold: onHistoryListHold }" >                
+            </ul>
+            
+         </div>
+        
+        <!--History template-->   
+        <script id="history-lw-delete-template" type="text/x-kendo-template">
+			<div class="item-in-list" data-role="touch">            	
+            	#=FlightNo#  Sectors: #=Sectors# 
+            	<a class="button" data-role="button" style="float: right;">Map</a>
+                <a class="button" data-role="button" style="float: right;">Save</a> <br>
+                #=AirCraftType # <br>              
+				#=BoardPoint #:  #=FlightDepartureTime # #=FlightDepartureTime # 
+            	<a id="delBtn" class="delete-btn" data-role="button" style="float: right;">Delete</a> <br>
+                #=OffPoint #:  #=FlightArrivalTime # #=FlightArrivalDate #
+        	</div>
+		</script>
+        
+    </div>
+    <!--History view-->
+    
+    
+    
+    <!--Settings view-->
+    <div id="settings"
+        data-role="view"
+        data-layout="header-footer-layout2"
+        data-title="Settings">
+        
+        <div class="view-content">
+            <a class="button-setting-first" data-role="button" href="#help">Help</a> <br>
+            <a class="button-setting" data-role="button" href="#about_app">About App</a> <br>
+            <a class="button-setting" data-role="button" href="#about_ccn">About CCN</a> <br>
+            <a class="button-setting" data-role="button" href="#term_condition">Terms & Conditions</a>     
+        </div>
+    </div>
+    <!--Settings view-->
+    
+    
+    
+    <!--About app view-->
+    <div id="about_app"
+        data-role="view"
+        data-layout="header-footer-layout2"
+        data-title="Flight Schedule">
+        
+        <div class="view-content">
+            <p id="p_about_app">
+ 				The About App content. 
+            </p>
+         </div>
+    </div>
+    <!--About app view-->
+    
+    
+    
+    <!--About CCN view-->
+    <div id="about_ccn"
+        data-role="view"
+        data-layout="header-footer-layout2"
+        data-title="Flight Schedule">
+        
+        <div class="view-content">
+            <p id="p_about_ccn">
+ 				The About CCN content. 
+            </p>
+         </div>
+    </div>
+    <!--About CCN view-->
+    
+    
+    
+    <!--Help view-->
+    <div id="help"
+        data-role="view"
+        data-layout="header-footer-layout2"
+        data-title="Flight Schedule">
+        
+        <div class="view-content">
+            <p id="p_help">
+ 				The Help content. 
+            </p>
+         </div>
+    </div>
+    <!--Help view-->
+    
+    
+    <!--Term & condition view-->
+    <div id="term_condition"
+        data-role="view"
+        data-layout="header-footer-layout2"
+        data-title="Flight Schedule">
+        
+        <div class="view-content">
+            <p id="p_term_condition">
+ 				The Terms & Condition content. 
+            </p>
+            <span data-bind="text:bar"></span>
+         </div>
+    </div>
+    <!--Term & condition view-->
+    
+    
+    <!--Layout: header (history & settings)& footer(advertising) -->
+    <div data-role="layout" data-id="header-footer-layout">
+
+        <!--Header-->
+        <div data-role="header">
+            <div id="layout_navbar" data-role="navbar">
+                <span data-role="view-title"></span>
+                <a href="#history" data-role="button" data-align="left">History</a>
+                <a href="#settings" data-role="button" data-align="right">Settings</a>
+                <!--
+                <a href="#test.html" data-role="button" data-align="right">Test</a>
+                -->
+            </div>
+        </div>
+
+        <!--Footer-->
+        <div data-role="footer">
+            <div data-role="tabstrip">  
+              	<a href="http://www.abccargo.com">
+				  	<img src="styles/images/ccn.jpg" alt="CCN images" />
+                  </a>
+            </div>
+        </div>
+        
+    </div>
+    <!--Layout: header (history & settings) & footer(advertising)-->
+    
+    
+    <!--Layout2: header (home & settings) & footer(advertising)-->
+    <div data-role="layout" data-id="header-footer-layout2">
+
+        <!--Header-->
+        <div data-role="header">
+            <div data-role="navbar">
+                <span data-role="view-title"></span>
+                <a href="#query" data-role="button" data-align="left">Query</a>
+                <a href="#settings" data-role="button" data-align="right">Settings</a>
+            </div>
+        </div>
+
+        <!--Footer-->
+        <div data-role="footer">
+            <div data-role="tabstrip">  
+              	<a href="http://www.abccargo.com">
+				  	<img src="styles/images/ccn.jpg" alt="CCN images" />
+                  </a>
+            </div>
+        </div>
+        
+    </div>
+    <!--Layout2: header (home & settings) & footer(advertising)-->
+    
+</body>
+</html>

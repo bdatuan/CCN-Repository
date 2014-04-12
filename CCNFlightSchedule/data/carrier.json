@@ -1,0 +1,17 @@
+{
+    "response": {
+        "usermessage": "message",
+        "developermessage": "messages xxx",
+        "build": "26",
+        "code": "0122",
+        "statuscode": "http://statuscode.ccnhub.com/0122"
+    },
+    "carriers": [
+        {
+            "carrier": "AA"
+        },
+        {
+            "carrier": "BB"
+        }
+    ]
+}
