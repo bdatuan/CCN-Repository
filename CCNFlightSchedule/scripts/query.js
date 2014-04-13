@@ -51,6 +51,33 @@
             //alert("url=" + url);
             app.application.navigate(url, 'slide:right');	
             
+            /*
+            var deviceId;
+            deviceId = window.localStorage.getItem("deviceId");
+            if (!deviceId) {            	
+                alert("Reset");
+            	
+            	//Call WS to get the 
+            	$.ajax({
+                type: "GET",
+                url: url,
+                data: "{}",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function(response) {
+                    alert("GetDeviceId success");
+            		var responseJSON = $.parseJSON(response);
+            		deviceId = responseJSON.SystemDeviceID;	
+            		alert("deviceId=" + deviceId);
+            		window.localStorage.setItem("deviceId", deviceId);	
+                }
+              });
+            }
+            
+            */
+            
+            
+            
         }
         
     });

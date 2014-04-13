@@ -11,24 +11,25 @@
     app.aboutAppService = {
         showAboutApp: function () {
             //alert("showAboutApp");
+            
             //Call ws to get the strAboutApp
             /*
+            var url = "";
             $.ajax({
                 type: "GET",
-                url: "http://apidev.ccnhub.com/v1/FlightSchedule.WebAPI/flightschedulehistory/?token=123&limit=10&offset=0",
+                url: url,
                 data: "{}",
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
-                success: function(msg) {
-                  // Hide the fake progress indicator graphic.
-                  alert("success");
-                  alert(msg);
+                success: function(response) {
+                    alert("success");
+            		var responseJSON = $.parseJSON(response);
+                    var strAboutApp = responseJSON.AboutAPP;
+            		alert("strAboutApp=" + strAboutApp);
+            		app.aboutAppService.viewModel.set("strAboutApp", strAboutApp);
                 }
               });
             */
-            var strAboutApp = "Call WS to show the strAboutApp";
-            
-            app.aboutAppService.viewModel.set("strAboutApp", strAboutApp);
 		},
         
         viewModel: new AboutAppViewModel()        
