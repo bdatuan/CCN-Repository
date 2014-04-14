@@ -15,11 +15,12 @@
         
         onSave: function (e){
         	alert("onSave");  
-            this.id = "f25b7202-ca04-4c01-8fad-94fe2e58476f";
-            var url = "http://apidev.ccnhub.com/v1/FlightSchedule.WebAPI/flightschedulehistory/1234/" + this.id + "/";
-            alert("url=" + url);
-            console.log("url=" + url);
+            this.id = "FD8F51DA-5214-41C7-B070-93D7CC4B6936";
+            var url = "http://apidev.ccnhub.com/v1/FlightSchedule.WebAPI/flightschedulehistory/1234/" + this.id;
+            //alert("url=" + url);
+            //console.log("url=" + url);
             
+            var visible;
             $.ajax({
                 type: "PUT",
                 url: url,
@@ -28,9 +29,17 @@
                 dataType: "text",
                 success: function(response) {
                 	alert("response=" + response);
-                    this.set("isVisible", false); 
+            		if (response.trim() == "true"){
+                    	visible = false;
+                    } else{
+                        visible = true;
+                    }
                 }
             });
+            
+            this.set("isVisible", visible);
+            //alert("isVisible=" + this.isVisible);
+            
         }
     });
     
@@ -54,7 +63,7 @@
             //console.log("url=" + url);
             
             //TODO: use the dummy url
-            url = "http://apidev.ccnhub.com/v1/FlightSchedule.WebAPI/flightschedule/?token=1234&origin=SIN&destination=SYD&carrier=SQ";
+            //url = "http://apidev.ccnhub.com/v1/FlightSchedule.WebAPI/flightschedule/?token=1234&origin=LAX&destination=SYD&carrier=SQ";
             
             //Datasource of flightDisplayList
             var arrFlightDetail = "";
@@ -77,6 +86,7 @@
                     var flightDate = responseJSON.FlightScheduleRequest.FlightDate;
                     var flightNumber = responseJSON.FlightScheduleRequest.FlightNumber;
                     var id = responseJSON.FlightScheduleRequest.Id;
+                    console.log("id=" + id);
                     var origin = responseJSON.FlightScheduleRequest.Origin;
                     
                     var scheduleAnswers = responseJSON.ScheduleAnswers;
@@ -147,47 +157,6 @@
                     });
                 }
               });
-                        
-            /*
-            arrFlightDetail = [
-            	{
-                    "AirCraftTypeCode": "388",
-                    "Arrival": 1397298300,
-                    "CarrierCode": "SQ",
-                    "Departure": 1397263500,
-                    "Destination": "SYD",
-                    "FlightNumber": "0231",
-                    "Origin": "SIN"
-                },
-            	{
-                    "AirCraftTypeCode": "77Q",
-                    "Arrival": 1397302200,
-                    "CarrierCode": "SQ",
-                    "Departure": 1397267100,
-                    "Destination": "SYD",
-                    "FlightNumber": "7702",
-                    "Origin": "SIN"
-                },
-            	{
-                    "AirCraftTypeCode": "74Y",
-                    "Arrival": 1397302500,
-                    "CarrierCode": "SQ",
-                    "Departure": 1397268000,
-                    "Destination": "SYD",
-                    "FlightNumber": "7296",
-                    "Origin": "SIN"
-                },
-            	{
-                    "AirCraftTypeCode": "772",
-                    "Arrival": 1397321100,
-                    "CarrierCode": "SQ",
-                    "Departure": 1397286300,
-                    "Destination": "SYD",
-                    "FlightNumber": "0241",
-                    "Origin": "SIN"
-                }
-            ];
-            */
         },
         
         viewModel: new FlightDisplayViewModel()
